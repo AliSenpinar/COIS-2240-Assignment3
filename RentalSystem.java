@@ -49,16 +49,27 @@ public class RentalSystem {
 	    }
 	}
 
-    public void addVehicle(Vehicle vehicle) {
-        vehicles.add(vehicle);
-        saveVehicle(vehicle);
-    }
+	public boolean addVehicle(Vehicle vehicle) {
+	    if (findVehicleByPlate(vehicle.getLicensePlate()) != null) {
+	        System.out.println("Duplicate license plate. Vehicle not added.");
+	        return false;
+	    }
 
-    public void addCustomer(Customer customer) {
-        customers.add(customer);
-        saveCustomer(customer);
-    }
-    
+	    vehicles.add(vehicle);
+	    saveVehicle(vehicle);
+	    return true;
+	}
+
+	public boolean addCustomer(Customer customer) {
+	    if (findCustomerById(customer.getCustomerId()) != null) {
+	        System.out.println("Duplicate customer ID. Customer not added.");
+	        return false;
+	    }
+
+	    customers.add(customer);
+	    saveCustomer(customer);
+	    return true;
+	}
     public void saveRecord(RentalRecord record) {
         try (FileWriter writer = new FileWriter("rental_records.txt", true)) {
             writer.write(record.getCustomer().getCustomerId() + "," +
@@ -228,4 +239,6 @@ public class RentalSystem {
             System.out.println("Error loading rental records: " + e.getMessage());
         }
     }
+    
+    
 }
