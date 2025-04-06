@@ -1,0 +1,3 @@
+ALI221,Honda,Ninja,2005,Motorcycle
+ALI1986,Mercedes,190e,1992,Car
+ALI2005,Honda,Ninja,1982,Motorcycle
