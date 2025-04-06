@@ -206,6 +206,7 @@ public class RentalSystem {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
+                if (parts.length < 2) continue;
                 int id = Integer.parseInt(parts[0]);
                 String name = parts[1];
 
