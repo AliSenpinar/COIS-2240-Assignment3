@@ -3,6 +3,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 
 public class RentalSystem {
@@ -15,8 +17,10 @@ public class RentalSystem {
 		vehicles = new ArrayList<>();
 		customers = new ArrayList<>();
 		rentalHistory = new RentalHistory();
+		loadData();
 		
 	}
+	
 	public static RentalSystem getInstance() {
 		if (instance == null) {
 			instance = new RentalSystem();
@@ -144,5 +148,84 @@ public class RentalSystem {
             if (c.getCustomerName().equalsIgnoreCase(name))
                 return c;
         return null;
+    }
+    
+    private void loadData() {
+    	loadVehicles();
+    	loadCustomers();
+    	loadRentalRecords();
+    }
+    
+    private void loadVehicles() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String plate = parts[0];
+                String make = parts[1];
+                String model = parts[2];
+                int year = Integer.parseInt(parts[3]);
+                String type = parts[4];
+
+                Vehicle vehicle = null;
+                switch (type) {
+                    case "Car":
+                        vehicle = new Car(make, model, year, 5); // default seat count
+                        break;
+                    case "Motorcycle":
+                        vehicle = new Motorcycle(make, model, year, false); // default sidecar
+                        break;
+                    case "Truck":
+                        vehicle = new Truck(make, model, year, 1000); // default cargo
+                        break;
+                }
+
+                if (vehicle != null) {
+                    vehicle.setLicensePlate(plate);
+                    vehicles.add(vehicle);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading vehicles: " + e.getMessage());
+        }
+    }
+    
+    private void loadCustomers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+
+                customers.add(new Customer(id, name));
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading customers: " + e.getMessage());
+        }
+    }
+    
+    private void loadRentalRecords() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("rental_records.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int customerId = Integer.parseInt(parts[0]);
+                String plate = parts[1];
+                LocalDate date = LocalDate.parse(parts[2]);
+                double amount = Double.parseDouble(parts[3]);
+                String type = parts[4];
+
+                Customer customer = findCustomerById(customerId);
+                Vehicle vehicle = findVehicleByPlate(plate);
+
+                if (vehicle != null && customer != null) {
+                    RentalRecord record = new RentalRecord(vehicle, customer, date, amount, type);
+                    rentalHistory.addRecord(record);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading rental records: " + e.getMessage());
+        }
     }
 }
