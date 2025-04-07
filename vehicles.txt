@@ -1,3 +1,8 @@
 ALI221,Honda,Ninja,2005,Motorcycle
 ALI1986,Mercedes,190e,1992,Car
 ALI2005,Honda,Ninja,1982,Motorcycle
+AAA111,Toyota,Corolla,2019,Car
+BBB222,Honda,Civic,2021,Car
+CCC333,Ford,Focus,2024,Car
+TST123,Toyota,Camry,2022,Car
+TST123,Toyota,Camry,2022,Car
